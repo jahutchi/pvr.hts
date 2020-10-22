@@ -377,8 +377,10 @@ PVR_ERROR CTvheadend::GetChannelStreamProperties(const kodi::addon::PVRChannel& 
   if (it == m_channels.end())
     return PVR_ERROR_FAILED;
 
+  const bool timeshiftEnabled = Settings::GetInstance().GetStreamingHTTPTimeshift();
+
   std::string path = "/stream/channelid/" + std::to_string(it->first);
-  const std::string streamingProfile = Settings::GetInstance().GetStreamingProfile();
+  const std::string streamingProfile = timeshiftEnabled ? "pass" : Settings::GetInstance().GetStreamingProfile();
   if (!streamingProfile.empty())
     path += "?profile=" + streamingProfile;
 
@@ -386,6 +388,34 @@ PVR_ERROR CTvheadend::GetChannelStreamProperties(const kodi::addon::PVRChannel& 
 
   properties.emplace_back(PVR_STREAM_PROPERTY_STREAMURL, url);
   properties.emplace_back(PVR_STREAM_PROPERTY_ISREALTIMESTREAM, "true");
+
+  if (timeshiftEnabled)
+  {
+    std::string ffmpegDirectVersion;
+    bool ffmpegDirectEnabled;
+
+    if (kodi::IsAddonAvailable("inputstream.ffmpegdirect", ffmpegDirectVersion, ffmpegDirectEnabled))
+    {
+      if (!ffmpegDirectEnabled) //ffmpegdirect addon is not enabled
+      {
+        kodi::QueueNotification(QueueMsg::QUEUE_ERROR, "HTTP timeshift unavailable", "Timeshift requires the Inputstream FFmpeg Direct addon to be enabled");
+        Logger::Log(LogLevel::LEVEL_ERROR, "Timeshift requires the Inputstream FFmpeg Direct addon to be enabled");
+      }
+      else //enable timeshift via ffmpegdirect addon
+      {
+        Logger::Log(LogLevel::LEVEL_DEBUG, "Enabling HTTP timeshift using inputstream.ffmpegdirect");
+        properties.emplace_back(PVR_STREAM_PROPERTY_INPUTSTREAM, "inputstream.ffmpegdirect");
+        properties.emplace_back(PVR_STREAM_PROPERTY_MIMETYPE, "video/mp2t");
+        properties.emplace_back("inputstream.ffmpegdirect.stream_mode", "timeshift");
+        properties.emplace_back("inputstream.ffmpegdirect.is_realtime_stream", "true");
+      }
+    }
+    else // ffmpegdirect addon not installed
+    {
+      kodi::QueueNotification(QueueMsg::QUEUE_ERROR, "HTTP timeshift unavailable", "Timeshift requires the Inputstream FFmpeg Direct addon to be installed");
+      Logger::Log(LogLevel::LEVEL_ERROR, "Timeshift requires the Inputstream FFmpeg Direct addon to be installed");
+    }
+  }
 
   return PVR_ERROR_NO_ERROR;
 }

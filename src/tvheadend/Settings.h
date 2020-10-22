@@ -44,6 +44,7 @@ public:
       DEFAULT_APPROX_TIME; // 0..1 (0 = use a fixed start time, 1 = use an approximate start time for auto recordings)
   static const std::string DEFAULT_STREAMING_PROFILE;
   static const bool DEFAULT_STREAMING_HTTP;
+  static const bool DEFAULT_STREAMING_HTTP_TIMESHIFT;
   static const int DEFAULT_DVR_PRIO; // any dvr_prio_t numeric value
   static const int DEFAULT_DVR_LIFETIME; // 0..15 (0 = 1 day, 15 = use backend setting)
   static const int DEFAULT_DVR_DUPDETECT; // 0..5  (0 = record all, 5 = limit to once a day)
@@ -91,6 +92,7 @@ public:
   int GetAutorecMaxDiff() const { return m_iAutorecMaxDiff; }
   std::string GetStreamingProfile() const { return m_strStreamingProfile; }
   bool GetStreamingHTTP() const { return m_bUseHTTPStreaming; }
+  bool GetStreamingHTTPTimeshift() const { return m_bUseHTTPTimeshift; }
   int GetDvrPriority() const { return m_iDvrPriority; }
   int GetDvrDupdetect() const { return m_iDvrDupdetect; }
   int GetDvrLifetime(bool asEnum = false) const;
@@ -118,6 +120,7 @@ private:
       m_iAutorecMaxDiff(DEFAULT_AUTOREC_MAXDIFF),
       m_strStreamingProfile(DEFAULT_STREAMING_PROFILE),
       m_bUseHTTPStreaming(DEFAULT_STREAMING_HTTP),
+      m_bUseHTTPTimeshift(DEFAULT_STREAMING_HTTP_TIMESHIFT),
       m_iDvrPriority(DEFAULT_DVR_PRIO),
       m_iDvrLifetime(DEFAULT_DVR_LIFETIME),
       m_iDvrDupdetect(DEFAULT_DVR_DUPDETECT),
@@ -150,6 +153,7 @@ private:
   void SetAutorecMaxDiff(int value) { m_iAutorecMaxDiff = value; }
   void SetStreamingProfile(const std::string& value) { m_strStreamingProfile = value; }
   void SetStreamingHTTP(bool value) { m_bUseHTTPStreaming = value; }
+  void SetStreamingHTTPTimeshift(bool value) { m_bUseHTTPTimeshift = value; }
   void SetDvrPriority(int value) { m_iDvrPriority = value; }
   void SetDvrLifetime(int value) { m_iDvrLifetime = value; }
   void SetDvrDupdetect(int value) { m_iDvrDupdetect = value; }
@@ -188,6 +192,7 @@ private:
   int m_iAutorecMaxDiff;
   std::string m_strStreamingProfile;
   bool m_bUseHTTPStreaming;
+  bool m_bUseHTTPTimeshift;
   int m_iDvrPriority;
   int m_iDvrLifetime;
   int m_iDvrDupdetect;

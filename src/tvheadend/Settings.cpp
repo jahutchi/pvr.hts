@@ -35,6 +35,7 @@ const int Settings::DEFAULT_APPROX_TIME =
     0; // don't use an approximate start time, use a fixed time instead for auto recordings
 const std::string Settings::DEFAULT_STREAMING_PROFILE = "";
 const bool Settings::DEFAULT_STREAMING_HTTP = false;
+const bool Settings::DEFAULT_STREAMING_HTTP_TIMESHIFT = false;
 const int Settings::DEFAULT_DVR_PRIO = DVR_PRIO_NORMAL;
 const int Settings::DEFAULT_DVR_LIFETIME = 15; // use backend setting
 const int Settings::DEFAULT_DVR_DUPDETECT = DVR_AUTOREC_RECORD_ALL;
@@ -75,6 +76,7 @@ void Settings::ReadSettings()
   /* Streaming */
   SetStreamingProfile(ReadStringSetting("streaming_profile", DEFAULT_STREAMING_PROFILE));
   SetStreamingHTTP(ReadBoolSetting("streaming_http", DEFAULT_STREAMING_HTTP));
+  SetStreamingHTTPTimeshift(ReadBoolSetting("streaming_http_timeshift", DEFAULT_STREAMING_HTTP_TIMESHIFT));
 
   /* Default dvr settings */
   SetDvrPriority(ReadIntSetting("dvr_priority", DEFAULT_DVR_PRIO));
@@ -156,6 +158,12 @@ ADDON_STATUS Settings::SetSetting(const std::string& key, const kodi::CSettingVa
     return SetStringSetting(GetStreamingProfile(), value);
   else if (key == "streaming_http")
     return SetBoolSetting(GetStreamingHTTP(), value);
+  else if (key == "streaming_http_timeshift")
+  {
+    if (value.GetBoolean() == true)
+      kodi::QueueNotification(QueueMsg::QUEUE_INFO, "HTTP Timeshift Enabled", "The built-in MPEG-TS Pass-through profile will be used for streaming");
+    return SetBoolSetting(GetStreamingHTTPTimeshift(), value);
+  }
   /* Default dvr settings */
   else if (key == "dvr_priority")
     return SetIntSetting(GetDvrPriority(), value);

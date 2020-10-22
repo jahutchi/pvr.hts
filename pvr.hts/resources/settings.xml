@@ -95,11 +95,22 @@
           <constraints>
             <allowempty>true</allowempty>
           </constraints>
+          <dependencies>
+            <dependency type="visible" setting="streaming_http_timeshift">false</dependency>
+          </dependencies>
           <control type="edit" format="string" />
         </setting>
         <setting id="streaming_http" type="boolean" label="30505" help="-1">
           <level>0</level>
           <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="streaming_http_timeshift" type="boolean" label="30506" help="-1">
+          <level>0</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="streaming_http">true</dependency>
+          </dependencies>
           <control type="toggle" />
         </setting>
       </group>

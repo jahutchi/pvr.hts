@@ -41,7 +41,8 @@ public:
       m_episode(-1),
       m_part(-1),
       m_recordingId(0),
-      m_year(0)
+      m_year(0),
+      m_isnew(0)
   {
   }
 
@@ -56,7 +57,7 @@ public:
            m_recordingId == other.m_recordingId && m_seriesLink == other.m_seriesLink &&
            m_year == other.m_year && m_writers == other.m_writers &&
            m_directors == other.m_directors && m_cast == other.m_cast &&
-           m_categories == other.m_categories;
+           m_categories == other.m_categories && m_isnew == other.m_isnew;
   }
 
   bool operator!=(const Event& other) const { return !(*this == other); }
@@ -133,6 +134,10 @@ public:
   const std::string& GetAired() const { return m_aired; }
   void SetAired(time_t aired);
 
+  uint32_t GetIsNew() const { return m_isnew; }
+  void SetIsNew(uint32_t isnew) { m_isnew = isnew; }
+
+
 private:
   uint32_t m_next;
   uint32_t m_channel;
@@ -157,6 +162,7 @@ private:
   std::string m_cast;
   std::string m_categories;
   std::string m_aired;
+  uint32_t m_isnew;
 };
 
 } // namespace entity

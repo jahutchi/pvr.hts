@@ -1364,6 +1364,9 @@ void CTvheadend::CreateEvent(const Event& event, kodi::addon::PVREPGTag& epg)
   epg.SetEpisodePartNumber(event.GetPart());
   epg.SetEpisodeName(event.GetSubtitle());
   epg.SetFlags(EPG_TAG_FLAG_UNDEFINED);
+  if (event.GetIsNew())
+    epg.SetFlags(EPG_TAG_FLAG_IS_NEW);
+
   epg.SetSeriesLink(event.GetSeriesLink());
 }
 
@@ -2722,6 +2725,8 @@ bool CTvheadend::ParseEvent(htsmsg_t* msg, bool bAdd, Event& evt)
     evt.SetYear(u32);
   if (!htsmsg_get_u32(msg, "dvrId", &u32))
     evt.SetRecordingId(u32);
+  if (!htsmsg_get_u32(msg, "isNew", &u32))
+    evt.SetIsNew(u32);
 
   if (m_conn->GetProtocol() >= 32)
   {
